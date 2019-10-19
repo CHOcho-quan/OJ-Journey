@@ -6,32 +6,82 @@
 //
 //
 
-class Solution {
-public:
-    vector<int> twoSum(vector<int>& nums, int target) {
-        vector<int> result,a;
-        a = nums;
-        sort(nums.begin(),nums.end());
+#include <iostream>
+#include <vector>
+#include <set>
+#include <algorithm>
+
+using namespace std;
+
+vector<int> twoSum2(vector<int>& nums, int target) {
+    vector<int> result, tmp;
+    
+    for (int i = 0;i < nums.size();i++) tmp.push_back(nums[i]);
+    
+    sort(tmp.begin(), tmp.end());
+    int f = 0, l = nums.size() - 1;
+    
+    while (true)
+    {
+        if (tmp[f] + tmp[l] == target) break;
         
-        int front = 0,back = nums.size()-1;
-        while (front < back)
-        {
-            if (nums[front] + nums[back] == target) break;
-            if (nums[front] + nums[back] < target) front++;
-            else back--;
-            
-            //while (front < back && nums[front]==temp_f) front++;
-            //while (front < back && nums[back]==temp_b) back--;
+        if (tmp[f] + tmp[l] > target) {
+            l--;
+            continue;
         }
         
-        bool flag1 = true,flag2 = true;
-        for (int i = 0;i < a.size();i++)
-        {
-            if (nums[front]==a[i] && flag1) {result.push_back(i);flag1 = false;}
-            else if (nums[back]==a[i] && flag2) {result.push_back(i);flag2 = false;}
-            if (!flag1 && !flag2) break;
+        if (tmp[f] + tmp[l] < target) {
+            f++;
+            continue;
         }
-        
-        return result;    
     }
-};
+    
+    for (int i = 0;i < nums.size();i++)
+    {
+        if (tmp[f] == nums[i])
+        {
+            result.push_back(i);
+            continue;
+        }
+        if (tmp[l] == nums[i])
+        {
+            result.push_back(i);
+            continue;
+        }
+    }
+    
+    sort(result.begin(), result.end());
+    
+    return result;
+}
+
+vector<int> twoSum1(vector<int>& nums, int target) {
+    vector<int> result;
+    bool flag = false;
+    
+    for (int i = 0;i < nums.size();i++)
+    {
+        for (int j = 0;j < nums.size();j++)
+        {
+            if (i != j && nums[i] + nums[j] == target)
+            {
+                result.push_back(i);
+                result.push_back(j);
+                flag = true;
+                break;
+            }
+        }
+        
+        if (flag) break;
+    }
+    
+    return result;
+}
+
+int main() {
+    vector<int> a = {3, 2, 4};
+    int target = 6;
+    
+    vector<int> r = twoSum2(a, target);
+    cout << r[0] << ' ' << r[1];
+}
