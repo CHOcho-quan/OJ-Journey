@@ -1,49 +1,37 @@
-//
-//  Leetcode20_括号匹配.cpp
-//  
-//
-//  Created by 铨 on 2019/1/20.
-//
-//
+#include <iostream>
+#include <vector>
+#include <set>
+#include <stack>
+#include <algorithm>
+#include <cmath>
 
-char ItsFriend(char a)
-{
-    switch (a)
+using namespace std;
+
+bool isValid(string s) {
+    stack<char> st1;
+    
+    for (int i = 0;i < s.length();i++)
     {
-        case '(': return ')';
-        case '[': return ']';
-        case '{': return '}';
-        case '~': return '*';
+        if (s[i] == '(' || s[i] == '[' || s[i] == '{') st1.push(s[i]);
+        else{
+            if (i == 0) return false;
+            
+            if (st1.empty()) return false;
+            char tmp = st1.top();
+            st1.pop();
+            
+            if (tmp == '(' && s[i] == ')') continue;
+            if (tmp == '[' && s[i] == ']') continue;
+            if (tmp == '{' && s[i] == '}') continue;
+            
+            return false;
+        }
     }
+    
+    return st1.empty();
 }
 
-class Solution {
-public:
-    bool isValid(string s) {
-        string read = "";
-        if (s=="") return true;
-        if (s[0]==')' || s[0]==']' || s[0]=='}') return false;
-        read+=s[0];
-        //int len = read.length();
-        char right_most = read[0];
-        for (int i = 1;i < s.length();i++)
-        {
-            //cout << read;
-            if (s[i]!=ItsFriend(right_most) && (s[i]!='(' && s[i]!='[' && s[i]!='{')) return false;
-            else if (s[i]==ItsFriend(right_most))
-            {
-                read.erase(read.end()-1);
-                if (read.length()!=0) right_most = read[read.length()-1];
-                else right_most = '~';
-            }
-            else
-            {
-                read.insert(read.end(),s[i]);
-                right_most = read[read.length()-1];
-            }
-            //cout << read << endl;
-        }
-        if (read.length()==0) return true;
-        else return false;    
-    }
-};
+int main() {
+    string t = "[])";
+    cout << isValid(t);
+}
