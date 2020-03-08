@@ -1,11 +1,3 @@
-//
-//  Leetcode124_二叉树带权最长路径.cpp
-//  
-//
-//  Created by 铨 on 2019/1/20.
-//
-//
-
 class Solution {
 public:
     int maxToRoot(TreeNode *root, int &re) {
