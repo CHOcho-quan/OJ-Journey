@@ -20,6 +20,34 @@ bool isMatch(string s, string p)
     else return false;
 }
 
+bool isMatch_Re(string s, string p) {
+        vector<vector<int>> dp(s.size()+1, vector<int>(p.size()+1, 0));
+        dp[0][0] = 1;
+
+        for (int i = 1;i < p.size()+1;i++) {
+            for (int j = 0;j < s.size()+1;j++) {
+                if (j == 0) {
+                    dp[j][i] = dp[j][i-1] && p[i-1] == '*';
+                    continue;
+                }
+                if (s[j-1] == p[i-1]) dp[j][i] = dp[j-1][i-1];
+                if (p[i-1] == '?') dp[j][i] = dp[j-1][i-1];
+                if (p[i-1] == '*') {
+                    dp[j][i] = (dp[j-1][i-1] || (j == 0 || dp[j-1][i]) || (dp[j][i-1]));
+                }
+            }
+        }
+
+        // for (int i = 0;i < s.size()+1;i++) {
+        //     for (int j = 0;j < p.size()+1;j++) {
+        //         cout << dp[i][j] << ' ';
+        //     }
+        //     cout << endl;
+        // }
+
+        return dp[s.size()][p.size()];
+    }
+
 bool isMatch_dp(string s, string p)
 {
     int n_i = s.length()+1, n_j = p.length()+1;
