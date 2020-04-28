@@ -1,42 +1,34 @@
-//
-//  Leetcode125_回文串.cpp
-//  
-//
-//  Created by 铨 on 2019/1/20.
-//
-//
+#include <string>
+#include <set>
+#include <algorithm>
+#include <vector>
 
-string Delete(string s)
-{
-    string result;
-    for (int i = 0;i < s.length();i++)
-    {
-        if (s[i]=='.'||s[i]==','||s[i]==':'||s[i]=='~'||s[i]=='!'||s[i]=='?'||s[i]==' '||s[i]=='@'||s[i]=='#'||s[i]=='$'||s[i]=='%'||s[i]=='^'||s[i]=='&'||s[i]=='*'||s[i]=='('||s[i]==')'||s[i]=='-'||s[i]=='+'||s[i]=='\"'||s[i]=='\''||s[i]==';'||s[i]=='`') continue;
-        else if (s[i] < 'a')
-        {
-            s[i] = s[i] - 'A' + 'a';
-            result.insert(result.end(),s[i]);
-        }
-        else result.insert(result.end(),s[i]);
-    }
-    return result;
-}
+using namespace std;
 
 class Solution {
 public:
+    bool check(char s)
+    {
+        return ((s <= 'Z' && s >= 'A') || (s <= 'z' && s >= 'a') || (s <= '9' && s >= '0'));
+    }
+
     bool isPalindrome(string s) {
-        if (s=="") return true;
-        string ss = Delete(s);
-        bool result = true;
-        int len = ss.length();
-        for (int i = 0;i < len/2;i++)
+        if (s.length() == 0) return 1;
+
+        // std::transform(s.begin(), s.end(), s.begin(),
+        //     [](unsigned char c){ return std::tolower(c); });
+        int i = 0, j = s.length()-1;
+        while (j >= i)
         {
-            if (ss[i]!=ss[len-1-i])
-            {
-                result = false;
-                break;
-            }
-        }  
-        return result; 
+            while (i < s.length() && !check(s[i])) i++;
+            while (j < s.length() && !check(s[j])) j--;
+            if (i >= s.length() || j >= s.length()) return 1;
+            // cout << s[i] << ' ' << s[j] << endl;
+            if (s[i] != s[j] && ((s[i] <= '9' && s[i] >= '0') || s[i] - 'A' + 'a' != s[j]) && (s[i] != s[j] - 'A' + 'a' || (s[j] <= '9' && s[j] >= '0'))) return 0;
+            i++;
+            j--;
+        }
+
+        return 1;
     }
 };
