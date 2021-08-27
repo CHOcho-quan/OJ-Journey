@@ -1,43 +1,24 @@
-#include <iostream>
-#include <vector>
-#include <set>
-#include <algorithm>
-
-using namespace std;
-
-int lengthOfLongestSubstring(string s) {
-    int ans = 0, rem = 0, cur = 0;
-    bool flag = true;
-    
-    for (int i = 0;i < s.size();i++)
-    {
-        flag = true;
-        
-        for (int j = rem;j < i;j++)
-        {
-            if (s[j] == s[i])
-            {
-                //cout << "Same";
-                flag = false;
-                cur = max(1, cur - j + rem);
-                rem = j + 1;
-                break;
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int l = 0, r = 0, result = 0;
+        int mask = 0;
+        unordered_set<char> check;
+        while (r < s.length()) {
+            // std::cout << "l: " << l << ", r: " << r << ' ';
+            if (!check.count(s[r])) {
+                // std::cout << "not cotain " << s[r] << '\n';
+                check.insert(s[r++]);
+            } else {
+                // std::cout << s[r] << " already cotains and mask: " << '\n';
+                result = max(result, r - l);
+                while (check.count(s[r])) {
+                    check.erase(s[l++]);
+                }
             }
         }
+        result = max(r - l, result);
         
-        //cout << cur << endl;
-        
-        if (flag) {
-            cur++;
-        }
-        ans = max(ans, cur);
+        return result;
     }
-    
-    return ans;
-}
-
-int main() {
-    string s = "pwwkew";
-    int r = lengthOfLongestSubstring(s);
-    cout << r;
-}
+};
