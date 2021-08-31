@@ -5,6 +5,23 @@ public:
         if (n == 0) {
             return 0;
         }
+        vector<int> buy(n + 1), sell(n + 1, 0);
+        
+        buy[1] = -prices[0];
+        for (int i = 2; i < prices.size() + 1; ++i) {
+            buy[i] = max(buy[i - 1], sell[i - 2] - prices[i - 1]);
+            sell[i] = max(sell[i - 1], buy[i] + prices[i - 1]);
+            // std::cout << buy[i] << ' ' << sell[i] << '\n';
+        }
+        
+        return sell[n];
+    }
+    
+    int maxProfit1(vector<int>& prices) {
+        int n = prices.size();
+        if (n == 0) {
+            return 0;
+        }
         vector<int> buy(n), sell(n), s1(n), s2(n);
         s1[0] = buy[0] = -prices[0];
         sell[0] = s2[0] = 0;
