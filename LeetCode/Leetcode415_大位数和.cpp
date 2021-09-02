@@ -1,33 +1,33 @@
-//
-//  Leetcode415_大位数和.cpp
-//  
-//
-//  Created by 铨 on 2019/1/20.
-//
-//
-
 class Solution {
 public:
     string addStrings(string num1, string num2) {
-        int n1,n2,n;
-        bool flag = false;
-        string result = "";
-        while (num1!="" || num2!="")
-        {
-            if (num1!="")n1 = num1[num1.length()-1] - '0';
-            if (num2!="")n2 = num2[num2.length()-1] - '0';
-            n = (n1+n2+flag >= 10 ? n1+n2-10+flag : n1 + n2+flag);
-            char temp = n+'0';
-            result.insert(result.begin(),temp);
-            //cout << result <<endl;
-            flag = (n1 + n2 + flag >=10);
-            if (num1!="")num1.erase(num1.end()-1);
-            if (num2!="")num2.erase(num2.end()-1);
-            n1 = 0;
-            n2 = 0;
-        }
-        if (flag) result = '1' + result;
+        int cur = 1, len1 = num1.length(), len2 = num2.length(), add = 0;
+        string result;
         
-        return result;  
+        for (; cur <= min(len1, len2); ++cur) {
+            int n1 = num1[len1 - cur] - '0', n2 = num2[len2 - cur] - '0';
+            result = static_cast<char>((n1 + n2 + add) % 10 + '0') + result;
+            add = (n1 + n2 + add) / 10;
+        }
+        
+        if (len1 == len2) {
+            if (add) result = static_cast<char>(add + '0') + result;
+        } else if (len1 > len2) {
+            while (cur <= len1) {
+                int n1 = num1[len1 - cur++] - '0';
+                result = static_cast<char>((n1 + add) % 10 + '0') + result;
+                add = (n1 + add) / 10;
+            }
+            if (add) result = static_cast<char>(add + '0') + result;
+        } else if (len2 > len1) {
+            while (cur <= len2) {
+                int n1 = num2[len2 - cur++] - '0';
+                result = static_cast<char>((n1 + add) % 10 + '0') + result;
+                add = (n1 + add) / 10;
+            }
+            if (add) result = static_cast<char>(add + '0') + result;
+        }
+        
+        return result;
     }
 };

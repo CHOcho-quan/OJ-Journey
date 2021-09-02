@@ -1,89 +1,65 @@
-#include <iostream>
-#include <vector>
-#include <set>
-#include <algorithm>
-
-using namespace std;
-
-
-struct ListNode {
-    int val;
-    ListNode *next;
-    ListNode(int x) : val(x), next(NULL) {}
-};
-
-ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-    ListNode *r;
-    r = new ListNode(0);
-    ListNode *tmp1 = l1, *tmp2 = l2, *result = r;
-    
-    int jw = 0, val;
-    
-    while (tmp1 != NULL && tmp2 != NULL)
-    {
-        val = tmp1->val + tmp2->val + jw;
-        if (val >= 10)
-        {
-            val = val % 10;
-            jw = 1;
-        }
-        else jw = 0;
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        if (l1 == nullptr && l2 == nullptr) return nullptr;
+        if (l1 == nullptr) return l2;
+        if (l2 == nullptr) return l1;
         
-        r->next = new ListNode(val);
-        r = r->next;
-        tmp1 = tmp1->next;
-        tmp2 = tmp2->next;
-    }
-    
-    if (tmp1 == NULL && tmp2 != NULL) {
-        while (tmp2 != NULL) {
-            val = tmp2->val + jw;
-            if (val >= 10) {
-                val = val % 10;
-                jw = 1;
-            } else jw = 0;
-            
-            r->next = new ListNode(val);
-            r = r->next;
-            tmp2 = tmp2->next;
+        ListNode* n = l1, *nl = l1;;
+        int add = 0;
+        while (n != nullptr && l2 != nullptr) {
+            n->val += l2->val + add;
+            if (n->val >= 10) {
+                n->val %= 10;
+                add = 1;
+            } else add = 0;
+            nl = n;
+            n = n->next;
+            l2 = l2->next;
         }
-    }
-    
-    if (tmp1 != NULL && tmp2 == NULL)
-    {
-        while (tmp1 != NULL)
-        {
-            val = tmp1->val + jw;
-            if (val >= 10) {
-                val = val % 10;
-                jw = 1;
-            } else jw = 0;
-            
-            r->next = new ListNode(val);
-            r = r->next;
-            tmp1 = tmp1->next;
+        if (l2 == nullptr && n == nullptr) {
+            if (add) nl->next = new ListNode(1);
+            return l1;
         }
+        if (n == nullptr) {
+            nl->next = l2;
+            nl = l2;
+            if (!add) return l1;
+            while (l2 != nullptr) {
+                l2->val += add;
+                if (l2->val >= 10) {
+                    l2->val %= 10;
+                    add = 1;
+                } else add = 0;
+                nl = l2;
+                l2 = l2->next;
+            }
+            if (add) nl->next = new ListNode(1);
+        }
+        if (l2 == nullptr) {
+            if (!add) return l1;
+            while (n != nullptr) {
+                n->val += add;
+                if (n->val >= 10) {
+                    n->val %= 10;
+                    add = 1;
+                } else add = 0;
+                nl = n;
+                n = n->next;
+            }
+            if (add) nl->next = new ListNode(1);
+        }
+        
+        return l1;
     }
-    
-    if (jw == 0) return result->next;
-    else
-    {
-        r->val = r->val % 10;
-        r->next = new ListNode(1);
-        return result->next;
-    }
-}
-
-int main() {
-    ListNode *s1, *s2, *r;
-    s1 = new ListNode(2);
-    //s1->next = new ListNode(4);
-    //s1->next->next = new ListNode(3);
-    
-    s2 = new ListNode(5);
-    //s2->next = new ListNode(6);
-    //s2->next->next = new ListNode(4);
-    
-    r = addTwoNumbers(s1, s2);
-    cout << r->val;// << r->next->val << r->next->next->val;
-}
+};
