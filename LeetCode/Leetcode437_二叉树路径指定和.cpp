@@ -1,26 +1,35 @@
-//
-//  Leetcode437_二叉树路径指定和.cpp
-//  
-//
-//  Created by 铨 on 2019/1/20.
-//
-//
-
-int pathSum1(TreeNode* root, int sum,int a = 0,int result = 0)
-{
-    if (root==NULL) return 0;
-    a+=root->val;
-    if (a==sum) result++;
-    if (root->left==NULL && root->right==NULL) return result;
-    if (root->left!=NULL && root->right==NULL) return result+pathSum1(root->left,sum,a,0);
-    if (root->left==NULL && root->right!=NULL) return result+pathSum1(root->right,sum,a,0);
-    if (root->left!=NULL && root->right!=NULL) return result+pathSum1(root->right,sum,a,0) + pathSum1(root->left,sum,a,0);
-}
-
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
 public:
-    int pathSum(TreeNode* root, int sum) {
-        if (root==NULL) return 0;
-        return pathSum1(root,sum)+pathSum(root->left,sum)+pathSum(root->right,sum);
+    void helper(TreeNode* root, int targetSum, vector<int>& cur, int& pathSum) {
+        if (root == nullptr) return;
+        for (auto& n : cur) {
+            if (root->val == n) ++pathSum;
+            n -= root->val;
+        }
+        cur.push_back(targetSum);
+        helper(root->left, targetSum, cur, pathSum);
+        helper(root->right, targetSum, cur, pathSum);
+        cur.pop_back();
+        for (auto& n : cur) {
+            n += root->val;
+        }
+    }
+    
+    int pathSum(TreeNode* root, int targetSum) {
+        vector<int> cur = {targetSum};
+        int result = 0;
+        helper(root, targetSum, cur, result);
+        return result;
     }
 };
