@@ -1,28 +1,30 @@
-#include <iostream>
-#include <vector>
-#include <set>
-#include <algorithm>
-
-using namespace std;
-
-int reverse(int x) {
-    int rev = 0;
-    while (x != 0) {
-        int pop = x % 10;
-        x /= 10;
-        if (rev > INT_MAX/10 || (rev == INT_MAX / 10 && pop > 7)) return 0;
-        if (rev < INT_MIN/10 || (rev == INT_MIN / 10 && pop < -8)) return 0;
-        rev = rev * 10 + pop;
+class Solution {
+public:
+    int reverse(int x) {
+        bool neg = false;
+        if (x < 0) {
+            neg = true;
+            if (x == -2147483648) return 0;
+            x = -x;
+        }
+        if (x == 0) return 0;
+        string result = "";
+        while (x != 0) {
+            result += x % 10 + '0';
+            x /= 10;
+        }
+        if (result.length() < 10) {
+            int re = stoi(result);
+            if (neg) return -re;
+            else return re;
+        } else if (result.length() > 10) return 0;
+        
+        if (!neg) {
+            if (result > "2147483647") return 0;
+            return stoi(result);
+        }
+        if (result == "2147483648") return 0;
+        if (result > "2147483648") return 0;
+        return -stoi(result);
     }
-    return rev;
-}
-
-bool isPalindrome(int x) {
-    if (reverse(x) == x and x >= 0) return true;
-    else return false;
-}
-
-int main() {
-    int x = -321;
-    cout << reverse(x);
-}
+};
