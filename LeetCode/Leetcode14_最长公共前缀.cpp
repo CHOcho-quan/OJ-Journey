@@ -1,39 +1,44 @@
-#include <iostream>
-#include <vector>
-#include <set>
-#include <algorithm>
-#include <cmath>
+class TrieNode {
+public:
+    TrieNode* child[26];
+    TrieNode() {
+        for (int i = 0; i < 26; ++i) child[i] = nullptr;
+    }
+};
 
-using namespace std;
-
-string longestCommonPrefix(vector<string>& strs) {
-    if (strs.size() == 0) return "";
-    if (strs.size() == 1) return strs[0];
-    string comp = strs[0];
-    string result = "";
-    bool flag;
+class Trie {
+public:
+    Trie() { root_ = new TrieNode(); }
     
-    for (int i = 0;i < comp.size();i++)
-    {
-        flag = true;
-        for (int j = 1;j < strs.size();j++)
-        {
-            if (i >= strs[j].size()) return result;
-            if (strs[j][i] != comp[i]) {
-                flag = false;
-                break;
-            }
-            if (i < strs[j].size() && strs[j][i] == comp[i]) continue;
+    void insert(const string& w) {
+        auto tmp = root_;
+        int cnt = 0;
+        for (int i = 0; i < w.length(); ++i) {
+            if (!tmp->child[w[i] - 'a'])
+                tmp->child[w[i] - 'a'] = new TrieNode();
+            else ++cnt;
+            tmp = tmp->child[w[i] - 'a'];
         }
-        
-        if (flag) result += comp[i];
-        else break;
+        if (!first_) re_ = min(cnt, re_);
+        first_ = false;
     }
     
-    return result;
-}
+    int result() { return re_; }
+    
+private:
+    TrieNode* root_;
+    bool first_ = true;
+    int re_ = 201;
+};
 
-int main() {
-    vector<string> s = {"aca","cba"};
-    cout << longestCommonPrefix(s);
-}
+class Solution {
+public:
+    string longestCommonPrefix(vector<string>& strs) {
+        if (strs.size() == 1) return strs[0];
+        Trie t;
+        for (auto& str : strs) {
+            t.insert(str);
+        }
+        return strs[0].substr(0, t.result());
+    }
+};

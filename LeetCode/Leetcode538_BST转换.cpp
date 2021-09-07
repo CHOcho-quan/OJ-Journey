@@ -1,43 +1,26 @@
-//
-//  Leetcode538_BST转换.cpp
-//  
-//
-//  Created by 铨 on 2019/1/20.
-//
-//
-
-void binaryR(TreeNode *root,TreeNode *result)
-{
-    if (root==NULL) return;
-    result->val+=root->val;
-    binaryR(root->right,result);
-    binaryR(root->left,result);
-}
-
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
 public:
-    TreeNode* convertBST(TreeNode* root,int bigger = 0,bool flag = false) {
-        if (root==NULL) return NULL;
-        TreeNode* result;
-        result= new TreeNode(root->val);
-        
-        binaryR(root->right,result);
-        
-        if (root->right==NULL) result->right = NULL;
-        else
-        {
-            root->right->val = bigger*flag + root->right->val;
-            result->right = convertBST(root->right,bigger,flag);
-        }
-        bigger = result->val;
-        if (root->left!=NULL)
-        {
-            root->left->val = bigger + root->left->val;
-            flag = true;
-            result->left = convertBST(root->left,bigger,flag);
-        }
-        else result->left = NULL;
-        
-        return result;    
+    int recurConvertBST(TreeNode* root, int al) {
+        if (root == nullptr) return 0;
+        auto l = recurConvertBST(root->right, al);
+        root->val += l;
+        if (!root->right) root->val += al;
+        return root->left != nullptr ? recurConvertBST(root->left, root->val) : root->val;
+    }
+    
+    TreeNode* convertBST(TreeNode* root) {
+        recurConvertBST(root, 0);
+        return root;
     }
 };
