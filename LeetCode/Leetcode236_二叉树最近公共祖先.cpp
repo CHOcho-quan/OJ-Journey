@@ -1,57 +1,45 @@
-#include <iostream>
-#include <vector>
-#include <algorithm>
-#include <string>
-#include <stack>
-#include <queue>
-#include <map>
-
-using namespace std;
-
-struct TreeNode {
-    int val;
-    TreeNode *left;
-    TreeNode *right;
-    TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    bool findNode(TreeNode* root, TreeNode* t) {
+        if (root == nullptr) return false;
+        if (root == t) return true;
+        return findNode(root->left, t) || findNode(root->right, t);
+    }
+    
+    TreeNode* re;
+    int recurLCA(TreeNode* root, TreeNode* t1, TreeNode* t2) {
+        if (root == nullptr) return 0;
+        if (root == t1) {
+            if (findNode(root, t2)) {
+                re = root;
+                return 3;
+            } else return 1;
+        } else if (root == t2) {
+            if (findNode(root, t1)) {
+                re = root;
+                return 3;
+            } else return 2;
+        }
+        int l1 = recurLCA(root->left, t1, t2), l2 = recurLCA(root->right, t1, t2);
+        if (l1 == 3 || l2 == 3) return 3;
+        if (l1 + l2 == 3) {
+            re = root;
+            return 3;
+        }
+        return l1 + l2;
+    }
+    
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        recurLCA(root, p, q);
+        return re;
+    }
 };
-
-TreeNode *result;
-int findTreeNode(TreeNode *root, int p, int q)
-{
-    if (root == NULL) return 0;
-    if (root->val == p) {
-        int left = findTreeNode(root->left, p, q), right = findTreeNode(root->right, p, q);
-        if (left == 2 || right == 2) {
-            result = root;
-            return -1000;
-        }
-        return 1;
-    }
-    if (root->val == q) {
-        int left = findTreeNode(root->left, p, q), right = findTreeNode(root->right, p, q);
-        if (left == 1 || right == 1) {
-            result = root;
-            return -1000;
-        }
-        return 2;
-    }
-    int left = findTreeNode(root->left, p, q), right = findTreeNode(root->right, p, q);
-    if (left + right == 3) {
-        result = root;
-        return -1000;
-    }
-
-    return left + right;
-}
-
-TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) 
-{
-    findTreeNode(root, p->val, q->val);
-    return result;       
-}
-
-int main()
-{
-    string s = "abc", t = "cda";
-    cout << CheckPermutation(s, t);
-}
