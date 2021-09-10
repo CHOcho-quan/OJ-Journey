@@ -1,31 +1,17 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <stack>
-
-using namespace std;
-
-bool backspaceCompare(string S, string T) 
-{
-    string s, t;
-    for (int i = 0;i < S.length();i++)
-    {
-        if (S[i] == '#') {if (s.length()!=0) s.pop_back();}
-        else s.push_back(S[i]);
+class Solution {
+public:
+    bool backspaceCompare(string s, string t) {
+        string s1 = "", t1 = "";
+        for (auto& si : s) {
+            if (si == '#') {
+                if (s1.length() != 0) s1 = s1.substr(0, s1.length() - 1);
+            } else s1 += si;
+        }
+        for (auto& ti : t) {
+            if (ti == '#') {
+                if (t1.length() != 0) t1 = t1.substr(0, t1.length() - 1);
+            } else t1 += ti;
+        }
+        return s1 == t1;
     }
-
-    for (int i = 0;i < T.length();i++)
-    {
-        if (T[i] == '#') {if (t.length()!=0) t.pop_back();}
-        else t.push_back(T[i]);
-    }
-
-    cout << s << ' ' << t << endl;
-    return s==t;
-}
-
-int main()
-{
-    string s = "xywrrmp", t = "xywrrmu#p";
-    cout << backspaceCompare(s, t);
-}
+};
