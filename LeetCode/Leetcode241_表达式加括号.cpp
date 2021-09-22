@@ -1,27 +1,37 @@
 class Solution {
 public:
-    unordered_map<string, vector<int>> rem;
     vector<int> diffWaysToCompute(string input) {
-        if (rem.count(input)) return rem[input];
-        vector<int> ways;
-        for (int i = 0; i < input.length(); i++) {
-            char c = input[i];
-            if (c == '+' || c == '-' || c == '*') {
-                vector<int> left = diffWaysToCompute(input.substr(0, i));
-                vector<int> right = diffWaysToCompute(input.substr(i + 1));
-                for (const int & l: left) {
-                    for (const int & r: right) {
-                        switch (c) {
-                            case '+': ways.push_back(l + r); break;
-                            case '-': ways.push_back(l - r); break;
-                            case '*': ways.push_back(l * r); break;
+        vector<int> result;
+        bool flag = false;
+        int last = 0;
+        for (int i = 0; i < input.length(); ++i) {
+            auto n = input[i];
+            if (n >='0' && n <= '9') continue;
+            flag = true;
+            auto l = diffWaysToCompute(input.substr(last, i - last));
+            auto r = diffWaysToCompute(input.substr(i + 1, input.length()));
+            for (auto li : l) {
+                for (auto ri : r) {
+                    switch (input[i]) {
+                        case '+': {
+                            result.push_back(li + ri);
+                            break;
+                        }
+                        case '-': {
+                            result.push_back(li - ri);
+                            break;
+                        }
+                        case '*': {
+                            result.push_back(li * ri);
+                            break;
                         }
                     }
                 }
             }
         }
-        if (ways.empty()) ways.push_back(stoi(input));
-        rem[input] = ways;
-        return ways;
+        
+        if (!flag) return {stoi(input)};
+        
+        return result;
     }
 };
