@@ -1,15 +1,15 @@
 class Solution {
 public:
-    vector<int> trib = {0, 1, 1};
     int tribonacci(int n) {
         if (n == 0) return 0;
         if (n == 1) return 1;
         if (n == 2) return 1;
-        if (n >= trib.size()) {
-            int new_num = tribonacci(n-3) + tribonacci(n-2) + tribonacci(n-1);
-            trib.push_back(new_num);
-            return trib[n];
+        vector<int> dp(n + 1, 0);
+        dp[1] = 1;
+        dp[2] = 1;
+        for (int i = 3; i <= n; ++i) {
+            dp[i] = dp[i - 1] + dp[i - 2] + dp[i - 3];
         }
-        else return trib[n];
+        return dp[n];
     }
 };
