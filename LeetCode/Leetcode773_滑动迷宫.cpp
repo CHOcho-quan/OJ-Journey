@@ -1,3 +1,56 @@
+// BFS
+class Solution {
+public:
+    vector<int> direction = {-1, 0, 1, 0, -1};
+    
+    int slidingPuzzle(vector<vector<int>>& board) {
+        map<vector<vector<int>>, int> rem;
+        vector<vector<int>> st = {{1,2,3}, {4,5,0}};
+        queue<vector<vector<int>>> q;
+        
+        q.push(st);
+        int cnt = 0;
+        while (!q.empty()) {
+            int len = q.size();
+            while (len--) {
+                auto cur = q.front(); q.pop();
+                if (cur == board) return cnt;
+                rem[cur] = cnt;
+                int x = 0, y = 0;
+                for (int i = 0; i < 2; ++i) {
+                    bool found = false;
+                    for (int j = 0; j < 3; ++j) {
+                        if (cur[i][j] == 0) {
+                            found = true;
+                            x = i;
+                            y = j;
+                            break;
+                        }
+                    }
+                    if (found) break;
+                }
+                
+                for (int k = 0; k < 4; ++k) {
+                    int nx = x + direction[k], ny = y + direction[k + 1];
+                    if (nx < 0 || ny < 0 || nx >= 2 || ny >= 3) continue;
+                    swap(cur[x][y], cur[nx][ny]);
+                    if (rem.count(cur)) {
+                        swap(cur[x][y], cur[nx][ny]);
+                        continue;
+                    } else {
+                        q.push(cur);
+                        swap(cur[x][y], cur[nx][ny]);
+                    }
+                }
+            }
+            ++cnt;
+        }
+        
+        return -1;
+    }
+};
+
+// DFS
 class Solution {
 public:
     using PII = pair<int, int>;
