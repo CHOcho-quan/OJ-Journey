@@ -1,88 +1,38 @@
-#include <iostream>
-#include <vector>
-#include <string>
-#include <stack>
-#include <queue>
-
-using namespace std;
-
-bool isMatch(string s, string p) 
-{
-    //TLE
-    if (p == s) return true;
-    if (p.length() == 0) return false;
-    if (s.length() == 0 && p[0] == '*') return isMatch(s, p.substr(1));
-    else return false;
-
-    if (p[0] == '?') return isMatch(s.substr(1), p.substr(1));
-    if (p[0] == '*') return isMatch(s, p.substr(1)) || isMatch(s.substr(1), p);
-    if (p[0] == s[0]) return isMatch(s.substr(1), p.substr(1));
-    else return false;
-}
-
-bool isMatch_Re(string s, string p) {
-        vector<vector<int>> dp(s.size()+1, vector<int>(p.size()+1, 0));
-        dp[0][0] = 1;
-
-        for (int i = 1;i < p.size()+1;i++) {
-            for (int j = 0;j < s.size()+1;j++) {
-                if (j == 0) {
-                    dp[j][i] = dp[j][i-1] && p[i-1] == '*';
-                    continue;
-                }
-                if (s[j-1] == p[i-1]) dp[j][i] = dp[j-1][i-1];
-                if (p[i-1] == '?') dp[j][i] = dp[j-1][i-1];
-                if (p[i-1] == '*') {
-                    dp[j][i] = (dp[j-1][i-1] || (j == 0 || dp[j-1][i]) || (dp[j][i-1]));
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int m = s.length(), n = p.length();
+        vector<vector<bool>> dp(m + 1, vector<bool>(n + 1, false));
+        dp[0][0] = true;
+        
+        for (int i = 1; i <= n; ++i) {
+            if (p[i - 1] == '*') dp[0][i] = dp[0][i] || dp[0][i - 1];
+        }
+        
+        for (int i = 1; i <= m; ++i) {
+            auto w1 = s[i - 1];
+            for (int j = 1; j <= n; ++j) {
+                auto w2 = p[j - 1];
+                if (w1 == w2) {
+                    dp[i][j] = dp[i][j] || dp[i - 1][j - 1];
+                } else if (w2 == '?') {
+                    dp[i][j] = dp[i][j] || dp[i - 1][j - 1];
+                } else if (w2 == '*') {
+                    // w2 matches nothing
+                    dp[i][j] = dp[i][j - 1] || dp[i][j];
+                    // w2 matches something
+                    dp[i][j] = dp[i - 1][j] || dp[i][j];
                 }
             }
         }
-
-        // for (int i = 0;i < s.size()+1;i++) {
-        //     for (int j = 0;j < p.size()+1;j++) {
+        
+        // for (int i = 0; i <= m; ++i) {
+        //     for (int j = 0; j <= n; ++j) {
         //         cout << dp[i][j] << ' ';
         //     }
-        //     cout << endl;
+        //     cout << '\n';
         // }
-
-        return dp[s.size()][p.size()];
+        
+        return dp[m][n];
     }
-
-bool isMatch_dp(string s, string p)
-{
-    int n_i = s.length()+1, n_j = p.length()+1;
-    vector<vector<bool>> dp(n_i, vector<bool>(n_j, false));
-
-    dp[0][0] = 1;
-    for (int i = 0;i < n_i;i++)
-    {
-        for (int j = 0;j < n_j;j++)
-        {
-            if (i == 0 && j == 0) continue;
-            if (j == 0 && i != 0) {dp[i][j] = 0;continue;}
-            if (j != 0 && i == 0) {dp[i][j] = (dp[i][j-1] && p[j-1] == '*');continue;}
-
-            if (p[j-1] == '?') dp[i][j] = dp[i-1][j-1];
-            if (p[j-1] == s[i-1]) dp[i][j] = dp[i-1][j-1];
-            if (p[j-1] == '*') dp[i][j] = (dp[i-1][j] || dp[i][j-1]);
-        }
-    }
-
-    /*
-    If not had the std::out noted
-    Time Limited Error
-    */
-    for (int i = 0;i < dp.size();i++)
-    {
-        for (int j = 0;j < dp[i].size();j++) {cout << dp[i][j] << ' ';}
-        cout << endl;
-    }
-
-    return dp[n_i-1][n_j-1];
-}
-
-int main()
-{
-    string s = "afdfd", p = "*";
-    cout << isMatch_dp(s, p);
-}
+};
