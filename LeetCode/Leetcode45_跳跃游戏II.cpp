@@ -1,17 +1,23 @@
 class Solution {
 public:
+    /*
+     dp[n] - there are t moves for 0 to get to n
+     nums[i] covers i to i + nums[i]
+     */
+    
     int jump(vector<int>& nums) {
-        int n = nums.size();
-        if (n == 1) return 0;
-        vector<int> dp(n, 10001);
-        dp[n - 1] = 0;
-        for (int i = n - 2; i >= 0; --i) {
-            for (int j = 1; j <= nums[i]; ++j) {
-                if (j + i >= n) break;
-                dp[i] = min(dp[j + i] + 1, dp[i]);
+        if (nums.size() == 1) return 0;
+        int res = 0, cur = 0, board = 0;
+        for (int i = 0; i < nums.size(); ++i) {
+            int step = nums[i];
+            cur = max(cur, i + step);
+            if (i == board) {
+                board = min(cur, static_cast<int>(nums.size() - 1));
+                ++res;
+                if (board == nums.size() - 1) return res;
             }
         }
         
-        return dp[0];
+        return res;
     }
 };
