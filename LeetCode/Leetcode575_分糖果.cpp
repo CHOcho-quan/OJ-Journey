@@ -1,32 +1,14 @@
-//
-//  Leetcode575_分糖果.cpp
-//  
-//
-//  Created by 铨 on 2020/3/28.
-//
-
-#include <iostream>
-#include <vector>
-#include <set>
-#include <stack>
-#include <algorithm>
-#include <queue>
-#include <cmath>
-#include <map>
-#include <numeric>
-
-using namespace std;
-
-int distributeCandies(vector<int>& candies) {
-    int sum = candies.size(), categories = 0;
-    set<int> m;
-    for (int i = 0;i < sum;i++) m.insert(candies[i]);
-    
-    if (m.size() >= sum / 2) return sum / 2;
-    else return m.size();
-}
-
-int main() {
-    vector<int> candies = {1,1,2,2,3,3};
-    cout << distributeCandies(candies) << endl;
-}
+class Solution {
+public:
+    int distributeCandies(vector<int>& candyType) {
+        int n = candyType.size(), upper = n / 2;
+        int res = 0;
+        unordered_set<int> candy;
+        for (int i = 0; i < candyType.size(); ++i) {
+            if (candy.count(candyType[i])) continue;
+            candy.insert(candyType[i]);
+            ++res;
+        }
+        return res > upper ? upper : res;
+    }
+};
